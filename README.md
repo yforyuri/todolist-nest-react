@@ -1,3 +1,4 @@
-study log for react and nestJS
-BE - nestJS
-FR - react
+study log for react and nestJS<br>
+todolist<br>
+BE - nestJS<br>
+FE - react<br>
