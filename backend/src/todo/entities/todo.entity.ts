@@ -23,6 +23,6 @@ export class Todo extends Common{
     desc: string;
 
     @Column('boolean', {default: false})
-    isDone: Boolean;
+    isComplete: Boolean;
 
 }
