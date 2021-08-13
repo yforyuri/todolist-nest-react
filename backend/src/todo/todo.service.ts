@@ -13,4 +13,8 @@ export class TodoService {
     async createTodo(CreateTodoDto: CreateTodoDto) {
         return await this.todoRepository.save(CreateTodoDto);
       }
+
+    async getTodos() {
+        return await this.todoRepository.find();
+      }
 }
