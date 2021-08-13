@@ -1,7 +1,8 @@
 import React, { FC } from 'react';
+import Todolist from './components/Todolist';
 
 const App: FC = () => {
-  return <div>Todolist</div>;
+  return <Todolist />;
 };
 
 export default App;
