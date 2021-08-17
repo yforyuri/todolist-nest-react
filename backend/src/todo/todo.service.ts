@@ -7,48 +7,49 @@ import { Todo } from './entities/todo.entity';
 
 @Injectable()
 export class TodoService {
-    constructor(
-        @InjectRepository(Todo) private readonly todoRepository: Repository<Todo>,
-    ){}
-    
-    async createTodo(CreateTodoDto: CreateTodoDto) {
-        return await this.todoRepository.save(CreateTodoDto);
-    }
-      
-    async getTodos() {
-        return await this.todoRepository.find();
+  constructor(
+    @InjectRepository(Todo) private readonly todoRepository: Repository<Todo>,
+  ) {}
+
+  async createTodo(CreateTodoDto: CreateTodoDto) {
+    return await this.todoRepository.save(CreateTodoDto);
+  }
+
+  async getTodos() {
+    return await this.todoRepository.find({
+      order: { createAt: 'DESC' },
+    });
+  }
+
+  async updateTodo(param, updateTodoDto: UpdateTodoDto) {
+    const todo = await this.todoRepository.findOne({
+      where: {
+        id: param.todoId,
+      },
+    });
+
+    if (!updateTodoDto.title && !updateTodoDto.desc) {
+      throw new HttpException(
+        '한 가지 이상의 값이 필요합니다',
+        HttpStatus.FORBIDDEN,
+      );
     }
 
-    async updateTodo(param, updateTodoDto: UpdateTodoDto) {
-        const todo = await this.todoRepository.findOne({
-            where: {
-                id: param.todoId,
-            },
-        });
-        
-        if (!updateTodoDto.title && !updateTodoDto.desc) {
-            throw new HttpException(
-                '한 가지 이상의 값이 필요합니다',
-                HttpStatus.FORBIDDEN,
-                );
-            }
-            
-            todo.title = updateTodoDto.title;
-            todo.desc = updateTodoDto.desc;
-    
-            return this.todoRepository.save(todo);
-        }
-    
-    async deleteTodo(param: { todoId: string }) {
-        return await this.todoRepository.delete(param.todoId);
-    }
+    todo.title = updateTodoDto.title;
+    todo.desc = updateTodoDto.desc;
 
+    return this.todoRepository.save(todo);
+  }
 
-    async toggleComplete(param: {todoId: string}) {
-        const toddo = await this.todoRepository.findOne({
-            where: {
-                id: +param.todoId
-            },
-        });      
-    }
+  async deleteTodo(param: { todoId: string }) {
+    return await this.todoRepository.delete(param.todoId);
+  }
+
+  async toggleComplete(param: { todoId: string }) {
+    const toddo = await this.todoRepository.findOne({
+      where: {
+        id: +param.todoId,
+      },
+    });
+  }
 }
