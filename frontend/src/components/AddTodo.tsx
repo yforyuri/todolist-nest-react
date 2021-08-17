@@ -1,7 +1,16 @@
 import axios from 'axios';
 import React, { useState, ChangeEvent, FC, FormEvent, useEffect } from 'react';
+import { MutatorCallback } from 'swr/dist/types';
+import { Itodo } from './Todolist';
 
-const AddTodo: FC = () => {
+export interface AddTodoProps {
+  mutate: (
+    data?: Itodo[] | Promise<Itodo[]> | MutatorCallback<Itodo[]> | undefined,
+    shouldRevalidate?: boolean | undefined,
+  ) => Promise<Itodo[] | undefined>;
+}
+
+const AddTodo: FC<AddTodoProps> = ({ mutate }) => {
   const [addTitle, setAddTitle] = useState<string>('');
   const [addDesc, setAddDesc] = useState<string>('');
 
@@ -15,7 +24,7 @@ const AddTodo: FC = () => {
     setAddDesc(value);
   };
 
-  const onSubmitAddToddo = async (e: FormEvent<HTMLFormElement>) => {
+  const onSubmitAddTodo = async (e: FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
 
@@ -26,14 +35,19 @@ const AddTodo: FC = () => {
           desc: addDesc,
         },
       );
-      console.log(response.data);
+
+      if (response.statusText === 'Created') {
+        setAddTitle('');
+        setAddDesc('');
+        mutate();
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
   return (
-    <form onSubmit={onSubmitAddToddo}>
+    <form onSubmit={onSubmitAddTodo}>
       <input type="text" value={addTitle} onChange={onChangeAddTitle} />
       <input type="text" value={addDesc} onChange={onChangeAddDesc} />
       <input type="submit" value="Add" />
