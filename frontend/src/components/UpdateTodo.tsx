@@ -44,8 +44,11 @@ const UpdateTodo: FC<UpdateTodoProps> = ({ id, title, desc, mutate }) => {
 
       if (response.statusText === 'OK') {
         setUpdateToggle(false);
+        mutate();
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
